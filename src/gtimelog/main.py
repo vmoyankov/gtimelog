@@ -1206,11 +1206,20 @@ class TaskEntry(Gtk.Entry):
         self.history_undo = ''
 
     def set_up_completion(self):
+
+        def match_func(completion, key, iter):
+            model = completion.get_model()
+            text = model.get_value(iter, 0)
+            if key in text:
+                return True
+            return False
+
         completion = self.gtk_completion = Gtk.EntryCompletion()
         self.completion_choices = Gtk.ListStore(str)
         self.completion_choices_as_set = set()
         completion.set_model(self.completion_choices)
         completion.set_text_column(0)
+        completion.set_match_func(match_func)
         if self.gtk_completion_enabled:
             self.set_completion(completion)
 
